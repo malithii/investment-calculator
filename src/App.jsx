@@ -1,63 +1,30 @@
 import { useState } from "react"
 import UserInput from "./util/components/UserInput"
-import { calculateInvestmentResults } from "./util/investment"
+import Results from "./util/components/Results"
 
 function App() {
 
-  const [inputInvestment, setInputInvestment] = useState({
-    initialInvestment: 0,
-    annualInvestment: 0,
-    expectedReturn  : 0,
-    duration       : 0,
-  })
+  const [input, setInput] = useState({
+    initialInvestment: 10000,
+    annualInvestment: 10000,
+    expectedReturn: 6,
+    duration: 10,
+})
 
-  const [result, setResult] = useState([])
-  function handleValueChange(name, value){
-    setInputInvestment({
-      ...inputInvestment,
-      [name]: value
+function handleChange(inputId, value){
+    setInput( prev=>{
+        return{
+            ...prev,
+            [inputId]: +value
+        }
     })
-    console.log(inputInvestment)
-    calculateInvestmentResults(inputInvestment)
-    console.log(calculateInvestmentResults(inputInvestment))
-   setResult(calculateInvestmentResults(inputInvestment))
-  }
-
-  
-
+}
+const inputIsValid = input.duration>0;
   return (
     <>
+    <UserInput onChange={handleChange} input={input}/>
+    {inputIsValid ? <Results input={input} />: <p className="center">Please Enter Valid Duration</p> }
    
-    <UserInput inputLabel="Initial Investment" onChange={handleValueChange} inputId="initialInvestment"/>
-    <UserInput inputLabel="Annual Investment" onChange={handleValueChange} inputId="annualInvestment"/>
-    <UserInput inputLabel="Expected Return" onChange={handleValueChange} inputId="expectedReturn"/>
-    <UserInput inputLabel="Duration" onChange={handleValueChange} inputId="duration"/>
-    
-    <table id="result">
-      <thead>
-        <tr>
-          <th>Year</th>
-          <th>Investment Value</th>
-          <th>Interest(Year)</th>
-          <th>Total Interest</th>
-          <th>Invested Capital</th>
-        </tr>
-      </thead>
-      <tbody>
-        {result.map((item)=>{ 
-          return(
-          <tr>
-            <td>{item.year}</td>
-            <td>{item.investmentValue}</td>
-            <td>{item.interest}</td>
-            <td>{item.totalInterest}</td>
-            <td>{item.investedCapital}</td>
-          </tr>)
-        })}
-      </tbody>
-    </table>
-    
-
     </>
     
   )
